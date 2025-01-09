@@ -8,9 +8,8 @@ local selectedMap = getgenv().Map
 local mode = getgenv().Mode
 local difficulty = getgenv().Difficulty
 
-
-task.spawn(function()
-    if game.PlaceId == 3260590327 then
+coroutine.wrap(function()
+    if tostring(game.GameId) == "3260590327" then
         print("wrong game | joining...")
         local startArgs = {
             [1] = "Multiplayer",
@@ -23,7 +22,8 @@ task.spawn(function()
         }
         game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
     end
-end)
+end)()
+
 
 local maps = {
     "Abandoned City",
