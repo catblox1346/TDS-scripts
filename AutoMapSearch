@@ -1,0 +1,115 @@
+local gameID = game.PlaceId
+
+task.spawn(function()
+    if gameID == 3260590327 then
+        local startArgs = {
+            [1] = "Multiplayer",
+            [2] = "v2:start",
+            [3] = {
+                ["difficulty"] = "Easy",
+                ["mode"] = "survival",
+                ["count"] = 1
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
+    end
+end)
+
+local maps = {
+    "Abandoned City",
+    "Abyssal Trench",
+    "Autumn Falling",
+    "Black Spot Exchange",
+    "Candy Valley",
+    "Cataclysm",
+    "Chess Board",
+    "Construction Crazy",
+    "Crossroads",
+    "Crystal Cave",
+    "Cyber City",
+    "Dead Ahead",
+    "Deserted Village",
+    "Dusty Bridges",
+    "Farm Lands",
+    "Forest Camp",
+    "Forgotten Docks",
+    "Four Seasons",
+    "Fungi Island",
+    "Gilded Path",
+    "Grass Isle",
+    "Harbor",
+    "Iceville",
+    "Infernal Abyss",
+    "Lay By",
+    "Marshlands",
+    "Mason Arch",
+    "Medieval Times",
+    "Meltdown",
+    "Moon Base",
+    "Nether",
+    "Necropolis",
+    "Night Station",
+    "Portland",
+    "Retro Lighthouse",
+    "Retro Zone",
+    "Rocket Arena",
+    "Ruby Escort",
+    "Sacred Mountains",
+    "Simplicity",
+    "Simplicity Remaster",
+    "Sky Islands",
+    "Space City",
+    "Spring Fever",
+    "Stained Temple",
+    "Sugar Rush",
+    "The Heights",
+    "Toyboard",
+    "Tropical Industries",
+    "Tropical Isles",
+    "U-Turn",
+    "Winter Abyss",
+    "Winter Bridges",
+    "Winter Stronghold",
+    "Wrecked Battlefield",
+    "Wrecked Battlefield II"
+}
+
+local queueteleport = queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
+local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
+local lobbyBoards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Boards")
+local selectedMap = getgenv().Map
+local mode = getgenv().Mode
+local difficulty = getgenv().Difficulty
+
+local function voteForMap()
+    for _, board in ipairs(lobbyBoards:GetChildren()) do
+        local hitbox = board:FindFirstChild("Hitboxes")
+        if hitbox and hitbox:FindFirstChild("Bottom") and hitbox.Bottom:FindFirstChild("MapDisplay") then
+            local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
+            if title and title.Text == selectedMap then
+                local cframe = hitbox.VotePlatform.CFrame
+                remoteEvent:FireServer("LobbyVoting", "Vote", selectedMap, Vector3.new(cframe.X, cframe.Y, cframe.Z))
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function vetoMap()
+    remoteEvent:FireServer("LobbyVoting", "Veto")
+end
+
+local function startMatch()
+    remoteFunction:InvokeServer("Multiplayer", "v2:start", { difficulty = difficulty, mode = mode, count = 1 })
+end
+
+if not voteForMap() then
+    vetoMap()
+    if not voteForMap() then
+        queueteleport("loadstring(game:HttpGet(''))()")
+        startMatch()
+    end
+end
