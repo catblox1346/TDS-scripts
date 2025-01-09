@@ -3,28 +3,6 @@ if not game:IsLoaded() then
 end
 
 
-
-local selectedMap = getgenv().Map
-local mode = getgenv().Mode
-local difficulty = getgenv().Difficulty
-
-coroutine.wrap(function()
-    if tostring(game.GameId) == "3260590327" then
-        print("wrong game | joining...")
-        local startArgs = {
-            [1] = "Multiplayer",
-            [2] = "v2:start",
-            [3] = {
-                ["difficulty"] = difficulty,
-                ["mode"] = mode,
-                ["count"] = 1
-            }
-        }
-        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
-    end
-end)()
-
-
 local maps = {
     "Abandoned City",
     "Abyssal Trench",
@@ -84,6 +62,13 @@ local maps = {
     "Wrecked Battlefield II"
 }
 
+
+
+local selectedMap = getgenv().Map
+local mode = getgenv().Mode
+local difficulty = getgenv().Difficulty
+
+
 local queueteleport = queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
@@ -91,35 +76,53 @@ local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
 local lobbyBoards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Boards")
 
 
-local function voteForMap()
-    for _, board in ipairs(lobbyBoards:GetChildren()) do
-        local hitbox = board:FindFirstChild("Hitboxes")
-        if hitbox and hitbox:FindFirstChild("Bottom") and hitbox.Bottom:FindFirstChild("MapDisplay") then
-            local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
-            if title and title.Text == selectedMap then
-                local cframe = hitbox.VotePlatform.CFrame
-                remoteEvent:FireServer("LobbyVoting", "Vote", selectedMap, Vector3.new(cframe.X, cframe.Y, cframe.Z))
-                return true
+
+coroutine.wrap(function()
+    if tostring(game.GameId) == "3260590327" then
+        print("wrong game | joining...")
+        local startArgs = {
+            [1] = "Multiplayer",
+            [2] = "v2:start",
+            [3] = {
+                ["difficulty"] = difficulty,
+                ["mode"] = mode,
+                ["count"] = 1
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
+    else
+        local function voteForMap()
+            for _, board in ipairs(lobbyBoards:GetChildren()) do
+                local hitbox = board:FindFirstChild("Hitboxes")
+                if hitbox and hitbox:FindFirstChild("Bottom") and hitbox.Bottom:FindFirstChild("MapDisplay") then
+                    local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
+                    if title and title.Text == selectedMap then
+                        local cframe = hitbox.VotePlatform.CFrame
+                        remoteEvent:FireServer("LobbyVoting", "Vote", selectedMap,
+                            Vector3.new(cframe.X, cframe.Y, cframe.Z))
+                        return true
+                    end
+                end
+            end
+            return false
+        end
+
+        local function vetoMap()
+            remoteEvent:FireServer("LobbyVoting", "Veto")
+        end
+
+        local function startMatch()
+            remoteFunction:InvokeServer("Multiplayer", "v2:start", { difficulty = difficulty, mode = mode, count = 1 })
+        end
+
+        if not voteForMap() then
+            print("checking map | waiting...")
+            vetoMap()
+            if not voteForMap() then
+                print("no map | rejoining...")
+                queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
+                startMatch()
             end
         end
     end
-    return false
-end
-
-local function vetoMap()
-    remoteEvent:FireServer("LobbyVoting", "Veto")
-end
-
-local function startMatch()
-    remoteFunction:InvokeServer("Multiplayer", "v2:start", { difficulty = difficulty, mode = mode, count = 1 })
-end
-
-if not voteForMap() then
-    print("checking map | waiting...")
-    vetoMap()
-    if not voteForMap() then
-        print("no map | rejoining...")
-        queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
-        startMatch()
-    end
-end
+end)()
