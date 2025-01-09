@@ -1,4 +1,8 @@
 local gameID = game.PlaceId
+local selectedMap = getgenv().Map
+local mode = getgenv().Mode
+local difficulty = getgenv().Difficulty
+
 
 task.spawn(function()
     if gameID == 3260590327 then
@@ -6,8 +10,8 @@ task.spawn(function()
             [1] = "Multiplayer",
             [2] = "v2:start",
             [3] = {
-                ["difficulty"] = "Easy",
-                ["mode"] = "survival",
+                ["difficulty"] = difficulty,
+                ["mode"] = mode,
                 ["count"] = 1
             }
         }
@@ -79,9 +83,7 @@ local replicatedStorage = game:GetService("ReplicatedStorage")
 local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
 local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
 local lobbyBoards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Boards")
-local selectedMap = getgenv().Map
-local mode = getgenv().Mode
-local difficulty = getgenv().Difficulty
+
 
 local function voteForMap()
     for _, board in ipairs(lobbyBoards:GetChildren()) do
