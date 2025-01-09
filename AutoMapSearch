@@ -78,7 +78,7 @@ local lobbyBoards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Bo
 
 
 coroutine.wrap(function()
-    if tostring(game.GameId) == "3260590327" then
+    if tostring(game.PlaceId) == "3260590327" then
         print("wrong game | joining...")
         local startArgs = {
             [1] = "Multiplayer",
