@@ -109,7 +109,7 @@ end
 if not voteForMap() then
     vetoMap()
     if not voteForMap() then
-        queueteleport("loadstring(game:HttpGet(''))()")
+        queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
         startMatch()
     end
 end
