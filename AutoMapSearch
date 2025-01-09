@@ -73,7 +73,6 @@ local queueteleport = queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
 local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
-local lobbyBoards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Boards")
 
 
 
@@ -91,6 +90,10 @@ coroutine.wrap(function()
         }
         game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
     else
+
+        local lobbyBoards = workspace:FindFirstChild("IntermissionLobby"):WaitForChild("Boards")
+
+
         local function voteForMap()
             for _, board in ipairs(lobbyBoards:GetChildren()) do
                 local hitbox = board:FindFirstChild("Hitboxes")
