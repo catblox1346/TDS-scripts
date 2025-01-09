@@ -76,7 +76,34 @@ local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
 
 
 
-coroutine.wrap(function()
+
+local settingsFile = "settings.txt"
+local saveSettings = {Map = selectedMap, Difficulty = difficulty, Mode = mode}
+
+local function saveSettings()
+    writefile(settingsFile, game:GetService("HttpService"):JSONEncode(saveSettings))
+    print("Settings saved.")
+end
+
+local function loadSettings()
+    local success, data = pcall(function() return readfile(settingsFile) end)
+    if success then
+        settings = game:GetService("HttpService"):JSONDecode(data)
+        print("Settings loaded.")
+        return settings
+    else
+        saveSettings()
+    end
+end
+
+
+
+
+
+
+
+
+if isfile(settingsFile) then
     if tostring(game.PlaceId) == "3260590327" then
         print("wrong game | joining...")
         local startArgs = {
@@ -90,6 +117,7 @@ coroutine.wrap(function()
         }
         game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
     else
+        local settings = loadSettings()
 
         local lobbyBoards = workspace:FindFirstChild("IntermissionLobby"):WaitForChild("Boards")
 
@@ -101,7 +129,7 @@ coroutine.wrap(function()
                     local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
                     if title and title.Text == selectedMap then
                         local cframe = hitbox.VotePlatform.CFrame
-                        remoteEvent:FireServer("LobbyVoting", "Vote", selectedMap,
+                        remoteEvent:FireServer("LobbyVoting", "Vote", settings.Map,
                             Vector3.new(cframe.X, cframe.Y, cframe.Z))
                         return true
                     end
@@ -115,7 +143,7 @@ coroutine.wrap(function()
         end
 
         local function startMatch()
-            remoteFunction:InvokeServer("Multiplayer", "v2:start", { difficulty = difficulty, mode = mode, count = 1 })
+            remoteFunction:InvokeServer("Multiplayer", "v2:start", { difficulty = settings.Difficulty, mode = settings.Mode, count = 1 })
         end
 
         if not voteForMap() then
@@ -126,7 +154,7 @@ coroutine.wrap(function()
 
 
                 local Players = game:GetService("Players")
-                Players.LocalPlayer.OnTeleport:Connect(function(State)
+                Players.LocalPlayer.OnTeleport:Connect(function()
                     queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
                 end)
                 task.wait(0.5)
@@ -134,4 +162,6 @@ coroutine.wrap(function()
             end
         end
     end
-end)()
+else
+    loadSettings()
+end
