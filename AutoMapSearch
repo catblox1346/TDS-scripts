@@ -78,10 +78,10 @@ local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
 
 
 local settingsFile = "settings.txt"
-local saveSettings = {Map = selectedMap, Difficulty = difficulty, Mode = mode}
+local settings = {Map = selectedMap, Difficulty = difficulty, Mode = mode}
 
 local function saveSettings()
-    writefile(settingsFile, game:GetService("HttpService"):JSONEncode(saveSettings))
+    writefile(settingsFile, game:GetService("HttpService"):JSONEncode(settings))
     print("Settings saved.")
 end
 
@@ -93,6 +93,7 @@ local function loadSettings()
         return settings
     else
         saveSettings()
+        return settings
     end
 end
 
@@ -104,6 +105,11 @@ end
 
 
 if isfile(settingsFile) then
+else
+    loadSettings()
+end
+
+
     if tostring(game.PlaceId) == "3260590327" then
         print("wrong game | joining...")
         local startArgs = {
@@ -162,6 +168,3 @@ if isfile(settingsFile) then
             end
         end
     end
-else
-    loadSettings()
-end
