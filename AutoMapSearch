@@ -3,14 +3,14 @@ if not game:IsLoaded() then
 end
 
 
-local gameID = game.PlaceId
+
 local selectedMap = getgenv().Map
 local mode = getgenv().Mode
 local difficulty = getgenv().Difficulty
 
 
-task.spawn(function()
-    if gameID == 3260590327 then
+
+    if game.PlaceId == 3260590327 then
         local startArgs = {
             [1] = "Multiplayer",
             [2] = "v2:start",
@@ -22,7 +22,7 @@ task.spawn(function()
         }
         game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
     end
-end)
+
 
 local maps = {
     "Abandoned City",
