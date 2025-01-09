@@ -121,6 +121,7 @@ coroutine.wrap(function()
             if not voteForMap() then
                 print("no map | rejoining...")
                 queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
+                task.wait(0.5)
                 startMatch()
             end
         end
