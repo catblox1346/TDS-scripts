@@ -69,7 +69,7 @@ local mode = getgenv().Mode
 local difficulty = getgenv().Difficulty
 
 
-local queueteleport = queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
 local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
@@ -123,7 +123,12 @@ coroutine.wrap(function()
             vetoMap()
             if not voteForMap() then
                 print("no map | rejoining...")
-                queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
+
+
+                local Players = game:GetService("Players")
+                Players.LocalPlayer.OnTeleport:Connect(function(State)
+                    queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
+                end)
                 task.wait(0.5)
                 startMatch()
             end
