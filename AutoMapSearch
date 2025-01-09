@@ -9,8 +9,9 @@ local mode = getgenv().Mode
 local difficulty = getgenv().Difficulty
 
 
-
+task.spawn(function()
     if game.PlaceId == 3260590327 then
+        print("wrong game | joining...")
         local startArgs = {
             [1] = "Multiplayer",
             [2] = "v2:start",
@@ -22,7 +23,7 @@ local difficulty = getgenv().Difficulty
         }
         game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(startArgs))
     end
-
+end)
 
 local maps = {
     "Abandoned City",
@@ -114,8 +115,10 @@ local function startMatch()
 end
 
 if not voteForMap() then
+    print("checking map | waiting...")
     vetoMap()
     if not voteForMap() then
+        print("no map | rejoining...")
         queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/catblox1346/TDS-scripts/refs/heads/main/AutoMapSearch'))()")
         startMatch()
     end
