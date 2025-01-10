@@ -3,6 +3,8 @@ if not game:IsLoaded() then
 end
 
 
+task.wait(5)
+
 local maps = {
     "Abandoned City",
     "Abyssal Trench",
