@@ -4,7 +4,12 @@ end
 
 repeat
     wait()
-until game:IsLoaded() and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("ReactGameIntermission").Frame.buttons
+until game:IsLoaded() and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("ReactGameIntermission") and 
+      game:GetService("Players").LocalPlayer.PlayerGui.ReactGameIntermission:FindFirstChild("Frame") and
+      game:GetService("Players").LocalPlayer.PlayerGui.ReactGameIntermission.Frame:FindFirstChild("buttons")
+
+print("UI is fully loaded. Starting...")
+
 
 task.wait(3)
 
