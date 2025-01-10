@@ -3,7 +3,6 @@ if not game:IsLoaded() then
 end
 
 
-task.wait(5)
 
 local maps = {
     "Abandoned City",
@@ -66,10 +65,6 @@ local maps = {
 
 
 
-local selectedMap = getgenv().Map
-local mode = getgenv().Mode
-local difficulty = getgenv().Difficulty
-
 
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 local replicatedStorage = game:GetService("ReplicatedStorage")
@@ -82,34 +77,24 @@ repeat
     task.wait(.1)
 until remoteFunction
 
-print("RemoteFunction found")
 
 
 
 
 
 local settingsFile = "settings.txt"
-local settings = {Map = selectedMap, Difficulty = difficulty, Mode = mode}
-
-local function saveSettings()
-    writefile(settingsFile, game:GetService("HttpService"):JSONEncode(settings))
-    print("Settings saved.")
-end
+local settings
 
 local function loadSettings()
-    saveSettings()
-    
-    task.wait(.5)
-
     local success, data = pcall(function() return readfile(settingsFile) end)
     if success then
         settings = game:GetService("HttpService"):JSONDecode(data)
         print("Settings loaded.")
-        return settings
+    else
+        print("Failed to load settings, using default values.")
     end
+    return settings
 end
-
-
 
 
 
@@ -120,13 +105,14 @@ end
 
 
     if tostring(game.PlaceId) == "3260590327" then
+        local settings = loadSettings()
         print("wrong game | joining...")
         local startArgs = {
             [1] = "Multiplayer",
             [2] = "v2:start",
             [3] = {
-                ["difficulty"] = difficulty,
-                ["mode"] = mode,
+                ["difficulty"] = settings.Difficulty,
+                ["mode"] = settings.Mode,
                 ["count"] = 1
             }
         }
@@ -142,7 +128,7 @@ end
                 local hitbox = board:FindFirstChild("Hitboxes")
                 if hitbox and hitbox:FindFirstChild("Bottom") and hitbox.Bottom:FindFirstChild("MapDisplay") then
                     local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
-                    if title and title.Text == selectedMap then
+                    if title and title.Text == settings.Map then
                         local cframe = hitbox.VotePlatform.CFrame
                         remoteEvent:FireServer("LobbyVoting", "Vote", settings.Map,
                             Vector3.new(cframe.X, cframe.Y, cframe.Z))
