@@ -130,8 +130,7 @@ end
                     local title = hitbox.Bottom.MapDisplay:FindFirstChild("Title")
                     if title and title.Text == settings.Map then
                         local cframe = hitbox.VotePlatform.CFrame
-                        remoteEvent:FireServer("LobbyVoting", "Vote", settings.Map,
-                            Vector3.new(cframe.X, cframe.Y, cframe.Z))
+                        --remoteEvent:FireServer("LobbyVoting", "Vote", settings.Map,Vector3.new(cframe.X, cframe.Y, cframe.Z))
                         return true
                     end
                 end
