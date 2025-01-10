@@ -2,13 +2,22 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-repeat
-    wait()
-until game:IsLoaded() and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("ReactGameIntermission") and 
-      game:GetService("Players").LocalPlayer.PlayerGui.ReactGameIntermission:FindFirstChild("Frame") and
-      game:GetService("Players").LocalPlayer.PlayerGui.ReactGameIntermission.Frame:FindFirstChild("buttons")
 
-print("UI is fully loaded. Starting...")
+if not tostring(game.PlaceId) == "3260590327" then
+    local player = game:GetService("Players").LocalPlayer
+    if player then
+        repeat
+            wait()
+        until player.PlayerGui:FindFirstChild("ReactGameIntermission") and
+              player.PlayerGui.ReactGameIntermission:FindFirstChild("Frame") and
+              player.PlayerGui.ReactGameIntermission.Frame:FindFirstChild("buttons")
+
+        print("UI is fully loaded. Starting...")
+    else
+        warn("LocalPlayer not found!")
+    end
+else
+end
 
 
 task.wait(3)
