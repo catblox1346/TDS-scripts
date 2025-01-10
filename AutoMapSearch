@@ -2,6 +2,11 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
+repeat
+    wait()
+until game:IsLoaded() and game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+task.wait(3)
 
 
 local maps = {
