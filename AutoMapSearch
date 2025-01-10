@@ -74,7 +74,16 @@ local difficulty = getgenv().Difficulty
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local remoteEvent = replicatedStorage:WaitForChild("RemoteEvent")
-local remoteFunction = replicatedStorage:WaitForChild("RemoteFunction")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local remoteFunction
+
+repeat
+    remoteFunction = replicatedStorage:FindFirstChild("RemoteFunction")
+    task.wait(.1)
+until remoteFunction
+
+print("RemoteFunction found")
+
 
 
 
