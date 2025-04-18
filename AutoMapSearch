@@ -37,11 +37,7 @@ local remoteEvent = ReplicatedStore:WaitForChild("RemoteEvent")
 local remoteFunction = ReplicatedStore:WaitForChild("RemoteFunction")
 
 if placeId == LOBBY_ID then
-    remoteFunction:InvokeServer("Multiplayer", "v2:start", {
-        difficulty = settings.Difficulty,
-        mode = settings.Mode,
-        count = 1,
-    })
+    remoteFunction:InvokeServer(unpack({[1] = "Multiplayer", [2] = "v2:start", [3] = {count = 1, mode = settings.Mode, difficulty = settings.Difficulty}}))
 else
     local boards = workspace:WaitForChild("IntermissionLobby"):WaitForChild("Boards")
 
@@ -66,11 +62,7 @@ else
     end
 
     local function startMatch()
-        remoteFunction:InvokeServer("Multiplayer", "v2:start", {
-            difficulty = settings.Difficulty,
-            mode = settings.Mode,
-            count = 1,
-        })
+        remoteFunction:InvokeServer(unpack({[1] = "Multiplayer", [2] = "v2:start", [3] = {count = 1, mode = settings.Mode, difficulty = settings.Difficulty}}))
     end
 
     if not voteForMap() then
@@ -84,3 +76,4 @@ else
         end
     end
 end
+
